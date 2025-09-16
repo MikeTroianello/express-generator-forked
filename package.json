@@ -61,6 +61,8 @@
   "scripts": {
     "lint": "eslint .",
     "test": "mocha --reporter spec --bail --check-leaks test/",
-    "test-ci": "mocha --reporter spec --check-leaks test/"
+    "test-ci": "mocha --reporter spec --check-leaks test/",
+    "ex": "node ./bin/express-cli.js",
+    "go": "node ./bin/modified-cli.js"
   }
 }
