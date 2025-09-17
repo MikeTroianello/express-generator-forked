@@ -54,7 +54,6 @@ $ npm run dev
 
 - Remove all basal View cruft
 - Connect to MongoDb via command-line input
-
 - Generate via command line:
     - Model folder
     - Middleware folder
