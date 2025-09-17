@@ -56,12 +56,12 @@ $ npm run dev
 - Connect to MongoDb via command-line input
 
 - Generate via command line:
-    - A model folder
-    - A middleware folder
-    - A basic token auth middleware
-    - A token-creation method
-    - A basic User model
-    - A protected route proof-of-concept
+    - Model folder
+    - Middleware folder
+    - Basic token auth middleware
+    - Token-creation method
+    - Basic User model
+    - Protected route proof-of-concept
 
 ### Extended desirable features
 
