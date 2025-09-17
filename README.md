@@ -1,8 +1,8 @@
+# NOTE: This is still a work in progress.
+
 A forked modification of [Express'](https://www.npmjs.com/package/express) application generator.
 
-# NOTE: This is still a work in progress and not ready for use
-
-## Changes from the Base Express Generator
+# Changes from the Base Express Generator
 
 This version exists to only return JSON data, not any views.
 Additionally, this is configured to use the ME_N stack:
@@ -10,11 +10,11 @@ Additionally, this is configured to use the ME_N stack:
 - Express
 - Node
 
-Mongoose will be installed
+Mongoose will be installed in the base generation.
 
 # Token Verification
 
-The generator will use [jsonwebtoken] for validation, as opposed to sessions
+The generator will use `jsonwebtoken` for validation, as opposed to sessions
 
 Create the backend:
 
@@ -42,7 +42,7 @@ Start your Express.js app at `http://localhost:3000/`:
 $ npm start
 ```
 
-For continuous updating with [nodemon]
+For continuous updating with `nodemon`
 
 ```bash
 $ npm run dev
