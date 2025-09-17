@@ -1,32 +1,33 @@
-[![Express Logo](https://i.cloudup.com/zfY6lL7eFa-3000x3000.png)](http://expressjs.com/)
+A forked modification of [Express'](https://www.npmjs.com/package/express) application generator.
 
-[Express'](https://www.npmjs.com/package/express) application generator.
+# NOTE: This is still a work in progress. Not ready for use yet
 
-[![NPM Version][npm-image]][npm-url]
-[![NPM Downloads][downloads-image]][downloads-url]
-[![Linux Build][github-actions-ci-image]][github-actions-ci-url]
-[![Windows Build][appveyor-image]][appveyor-url]
+## Changes from the Base Express Generator
 
-## Installation
+This version exists to only return JSON data, not any views.
+Additionally, this is configured to use the ME_N stack:
+- Mongo
+- Express
+- Node
 
-```sh
-$ npm install -g express-generator
-```
+Mongoose will be installed
 
-You can also run the application generator with the `npx` command (available since Node.js 8.2.0).
+# Token Verification
 
-```sh
-$ npx express-generator
-```
+The generator will use [jsonwebtoken] for validation, as opposed to sessions
 
-## Quick Start
-
-The quickest way to get started with express is to utilize the executable `express(1)` to generate an application as shown below:
-
-Create the app:
+Create the backend:
 
 ```bash
-$ express --view=hbs /tmp/foo && cd /tmp/foo
+$ npm run go
+```
+
+NOTE: This will create an Express app inside the generator. This is only temporary.
+
+Enter the app:
+
+```bash
+$ cd backend
 ```
 
 Install dependencies:
@@ -41,31 +42,38 @@ Start your Express.js app at `http://localhost:3000/`:
 $ npm start
 ```
 
-## Command Line Options
+For continuous updating with [nodemon]
 
-This generator can also be further configured with the following command line flags.
+```bash
+$ npm run dev
+```
 
-        --version        output the version number
-    -e, --ejs            add ejs engine support
-        --pug            add pug engine support
-        --hbs            add handlebars engine support
-    -H, --hogan          add hogan.js engine support
-    -v, --view <engine>  add view <engine> support (dust|ejs|hbs|hjs|jade|pug|twig|vash) (defaults to jade)
-        --no-view        use static html instead of view engine
-    -c, --css <engine>   add stylesheet <engine> support (less|stylus|compass|sass) (defaults to plain css)
-        --git            add .gitignore
-    -f, --force          force on non-empty directory
-    -h, --help           output usage information
+## Future changes to make
+
+# Changes for base version
+
+- Remove all basal View cruft
+- Connect to MongoDb via command-line input
+
+- Generate via command line:
+    - A model folder
+    - A middleware folder
+    - A basic token auth middleware
+    - A token-creation method
+    - A basic User model
+    - A protected route proof-of-concept
+
+# Extended desirable features
+
+- Generate package.json dependency versions based on the user's active Node version
+- Create routes via command line
+- Create models via command line
+- Connect to a git repository via command-line input
+
+# Very far down the road
+
+- Typescript compatibility
 
 ## License
 
 [MIT](LICENSE)
-
-[npm-image]: https://img.shields.io/npm/v/express-generator.svg
-[npm-url]: https://npmjs.org/package/express-generator
-[appveyor-image]: https://img.shields.io/appveyor/ci/dougwilson/generator/master.svg?label=windows
-[appveyor-url]: https://ci.appveyor.com/project/dougwilson/generator
-[downloads-image]: https://img.shields.io/npm/dm/express-generator.svg
-[downloads-url]: https://npmjs.org/package/express-generator
-[github-actions-ci-image]: https://img.shields.io/github/workflow/status/expressjs/generator/ci/master?label=linux
-[github-actions-ci-url]: https://github.com/expressjs/generator/actions/workflows/ci.yml

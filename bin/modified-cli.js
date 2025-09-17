@@ -15,6 +15,11 @@ var MODE_0755 = parseInt('0755', 8)
 var TEMPLATE_DIR = path.join(__dirname, '..', 'templates')
 var VERSION = require('../package').version
 
+// Get the user's npm version
+const { execSync } = require('child_process')
+const npmVersion = execSync('npm --version').toString().trim()
+console.log('NPM version:', npmVersion)
+
 // parse args
 var unknown = []
 var args = parseArgs(process.argv.slice(2), {
@@ -86,24 +91,32 @@ function copyTemplateMulti (fromDir, toDir, nameGlob) {
  */
 
 function createApplication (name, dir, options, done) {
-  console.log("name",name)
-  console.log("dir",dir)
-  console.log("options",options)
-
-
   // Package
   var pkg = {
     name: name,
     version: '0.0.0',
     private: true,
     scripts: {
-      start: 'node ./bin/www'
+      start: 'node ./bin/www',
+      dev: 'npx nodemon ./bin/www'
+    },
+    engines: {
+      node: process.version.replace(/^v/, ''),
+      npm: npmVersion
     },
     dependencies: {
       debug: '~2.6.9',
-      express: '~4.17.1'
+      express: '~4.17.1',
+      mongoose: '^8.18.0',
+      cors: '^2.8.5',
+      bcrypt: '^5.1.0',
+      dotenv: '^16.3.1',
+      jsonwebtoken: '^9.0.0'
     }
   }
+
+  console.log('process.version', process.version)
+  console.log('process', process)
 
   // JavaScript
   var app = loadTemplate('js/app.js')
@@ -136,86 +149,15 @@ function createApplication (name, dir, options, done) {
     mkdir(dir, '.')
   }
 
-  mkdir(dir, 'public')
-  mkdir(dir, 'public/javascripts')
-  mkdir(dir, 'public/images')
-  mkdir(dir, 'public/stylesheets')
-
-  // copy css templates
-  switch (options.css) {
-    case 'less':
-      copyTemplateMulti('css', dir + '/public/stylesheets', '*.less')
-      break
-    case 'stylus':
-      copyTemplateMulti('css', dir + '/public/stylesheets', '*.styl')
-      break
-    case 'compass':
-      copyTemplateMulti('css', dir + '/public/stylesheets', '*.scss')
-      break
-    case 'sass':
-      copyTemplateMulti('css', dir + '/public/stylesheets', '*.sass')
-      break
-    default:
-      copyTemplateMulti('css', dir + '/public/stylesheets', '*.css')
-      break
-  }
+  // mkdir(dir, 'public')
+  // mkdir(dir, 'public/javascripts')
 
   // copy route templates
   mkdir(dir, 'routes')
   copyTemplateMulti('js/routes', dir + '/routes', '*.js')
 
-  if (options.view) {
-    // Copy view templates
-    mkdir(dir, 'views')
-    pkg.dependencies['http-errors'] = '~1.7.2'
-    switch (options.view) {
-      case 'dust':
-        copyTemplateMulti('views', dir + '/views', '*.dust')
-        break
-      case 'ejs':
-        copyTemplateMulti('views', dir + '/views', '*.ejs')
-        break
-      case 'hbs':
-        copyTemplateMulti('views', dir + '/views', '*.hbs')
-        break
-      case 'jade':
-        copyTemplateMulti('views', dir + '/views', '*.jade')
-        break
-      case 'twig':
-        copyTemplateMulti('views', dir + '/views', '*.twig')
-        break
-      case 'vash':
-        copyTemplateMulti('views', dir + '/views', '*.vash')
-        break
-    }
-  } else {
-    // Copy extra public files
-    copyTemplate('js/index.html', path.join(dir, 'public/index.html'))
-  }
-
-  // CSS Engine support
-  switch (options.css) {
-    case 'compass':
-      app.locals.modules.compass = 'node-compass'
-      app.locals.uses.push("compass({ mode: 'expanded' })")
-      pkg.dependencies['node-compass'] = '0.2.3'
-      break
-    case 'less':
-      app.locals.modules.lessMiddleware = 'less-middleware'
-      app.locals.uses.push("lessMiddleware(path.join(__dirname, 'public'))")
-      pkg.dependencies['less-middleware'] = '~2.2.1'
-      break
-    case 'sass':
-      app.locals.modules.sassMiddleware = 'node-sass-middleware'
-      app.locals.uses.push("sassMiddleware({\n  src: path.join(__dirname, 'public'),\n  dest: path.join(__dirname, 'public'),\n  indentedSyntax: true, // true = .sass and false = .scss\n  sourceMap: true\n})")
-      pkg.dependencies['node-sass-middleware'] = '0.11.0'
-      break
-    case 'stylus':
-      app.locals.modules.stylus = 'stylus'
-      app.locals.uses.push("stylus.middleware(path.join(__dirname, 'public'))")
-      pkg.dependencies.stylus = '0.54.5'
-      break
-  }
+  // Copy extra public files
+  // copyTemplate('js/index.html', path.join(dir, 'public/index.html'))
 
   // Index router mount
   app.locals.localModules.indexRouter = './routes/index'
@@ -225,43 +167,10 @@ function createApplication (name, dir, options, done) {
   app.locals.localModules.usersRouter = './routes/users'
   app.locals.mounts.push({ path: '/users', code: 'usersRouter' })
 
-  // Template support
-  switch (options.view) {
-    case 'dust':
-      app.locals.modules.adaro = 'adaro'
-      app.locals.view = {
-        engine: 'dust',
-        render: 'adaro.dust()'
-      }
-      pkg.dependencies.adaro = '~1.0.4'
-      break
-    case 'ejs':
-      app.locals.view = { engine: 'ejs' }
-      pkg.dependencies.ejs = '~2.6.1'
-      break
-    case 'hbs':
-      app.locals.view = { engine: 'hbs' }
-      pkg.dependencies.hbs = '~4.0.4'
-      break
-    case 'jade':
-      app.locals.view = { engine: 'jade' }
-      pkg.dependencies.jade = '~1.11.0'
-      break
-    case 'twig':
-      app.locals.view = { engine: 'twig' }
-      pkg.dependencies.twig = '~0.10.3'
-      break
-    case 'vash':
-      app.locals.view = { engine: 'vash' }
-      pkg.dependencies.vash = '~0.12.6'
-      break
-    default:
-      app.locals.view = false
-      break
-  }
+  app.locals.view = false
 
   // Static files
-  app.locals.uses.push("express.static(path.join(__dirname, 'public'))")
+  // app.locals.uses.push("express.static(path.join(__dirname, 'public'))")
 
   if (options.git) {
     copyTemplate('js/gitignore', path.join(dir, '.gitignore'))
@@ -429,26 +338,6 @@ function main (options, done) {
     // App name
     var appName = createAppName(path.resolve(destinationPath)) || 'hello-world'
 
-    // View engine
-    if (options.view === true) {
-      if (options.ejs) {
-        options.view = 'ejs'
-        warning("option `--ejs' has been renamed to `--view=ejs'")
-      }
-
-      if (options.hbs) {
-        options.view = 'hbs'
-        warning("option `--hbs' has been renamed to `--view=hbs'")
-      }
-    }
-
-    // Default view engine
-    if (options.view === true) {
-      warning('the default view engine will not be jade in future releases\n' +
-        "use `--view=jade' or `--help' for additional options")
-      options.view = 'jade'
-    }
-    console.log("destinationPath",destinationPath)
     // Generate application
     emptyDirectory(destinationPath, function (empty) {
       if (empty || options.force) {
@@ -492,8 +381,6 @@ function usage () {
   console.log('')
   console.log('  Options:')
   console.log('')
-  console.log('    -e, --ejs            add ejs engine support')
-  console.log('        --hbs            add handlebars engine support')
   console.log('    -v, --view <engine>  add view <engine> support (dust|ejs|hbs|jade|twig|vash) (defaults to jade)')
   console.log('        --no-view        use static html instead of view engine')
   console.log('    -c, --css <engine>   add stylesheet <engine> support (less|stylus|compass|sass) (defaults to plain css)')
