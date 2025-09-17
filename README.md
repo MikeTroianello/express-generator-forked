@@ -1,6 +1,6 @@
 A forked modification of [Express'](https://www.npmjs.com/package/express) application generator.
 
-# NOTE: This is still a work in progress. Not ready for use yet
+# NOTE: This is still a work in progress and not ready for use
 
 ## Changes from the Base Express Generator
 
