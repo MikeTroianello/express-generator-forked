@@ -48,9 +48,9 @@ For continuous updating with [nodemon]
 $ npm run dev
 ```
 
-## Future changes to make
+# Future changes to make
 
-# Changes for base version
+### Changes for base version
 
 - Remove all basal View cruft
 - Connect to MongoDb via command-line input
@@ -63,14 +63,14 @@ $ npm run dev
     - A basic User model
     - A protected route proof-of-concept
 
-# Extended desirable features
+### Extended desirable features
 
 - Generate package.json dependency versions based on the user's active Node version
 - Create routes via command line
 - Create models via command line
 - Connect to a git repository via command-line input
 
-# Very far down the road
+### Very far down the road
 
 - Typescript compatibility
 
