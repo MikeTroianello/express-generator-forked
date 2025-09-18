@@ -18,7 +18,6 @@ var VERSION = require('../package').version
 // Get the user's npm version
 const { execSync } = require('child_process')
 const npmVersion = execSync('npm --version').toString().trim()
-console.log('NPM version:', npmVersion)
 
 // parse args
 var unknown = []
@@ -115,9 +114,6 @@ function createApplication (name, dir, options, done) {
     }
   }
 
-  console.log('process.version', process.version)
-  console.log('process', process)
-
   // JavaScript
   var app = loadTemplate('js/app.js')
   var www = loadTemplate('js/www')
@@ -156,6 +152,14 @@ function createApplication (name, dir, options, done) {
   mkdir(dir, 'routes')
   copyTemplateMulti('js/routes', dir + '/routes', '*.js')
 
+  // copy model templates
+  mkdir(dir, 'models')
+  copyTemplateMulti('js/models', dir + '/models', '*.js')
+
+  // copy middleware templates
+  mkdir(dir, 'middleware')
+  copyTemplateMulti('js/middleware', dir + '/middleware', '*.js')
+
   // Copy extra public files
   // copyTemplate('js/index.html', path.join(dir, 'public/index.html'))
 
@@ -182,6 +186,7 @@ function createApplication (name, dir, options, done) {
   // write files
   write(path.join(dir, 'app.js'), app.render())
   write(path.join(dir, 'package.json'), JSON.stringify(pkg, null, 2) + '\n')
+  write(path.join(dir, '.env'), 'SECRET=CREATE_A_REAL_SECRET_DO_NOT_USE_THIS')
   mkdir(dir, 'bin')
   write(path.join(dir, 'bin/www'), www.render(), MODE_0755)
 
@@ -396,20 +401,6 @@ function usage () {
 
 function version () {
   console.log(VERSION)
-}
-
-/**
- * Display a warning.
- *
- * @param {String} message
- */
-
-function warning (message) {
-  console.error()
-  message.split('\n').forEach(function (line) {
-    console.error('  warning: %s', line)
-  })
-  console.error()
 }
 
 /**

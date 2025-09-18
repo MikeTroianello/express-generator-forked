@@ -55,11 +55,8 @@ $ npm run dev
 - Remove all basal View cruft
 - Connect to MongoDb via command-line input
 - Generate via command line:
-    - Model folder
-    - Middleware folder
     - Basic token auth middleware
     - Token-creation method
-    - Basic User model
     - Protected route proof-of-concept
 
 ### Extended desirable features
@@ -68,10 +65,12 @@ $ npm run dev
 - Create routes via command line
 - Create models via command line
 - Connect to a git repository via command-line input
+- Create validator middleware
 
 ### Very far down the road
 
 - Typescript compatibility
+- Create a dynamic db seed script
 
 ## License
 
