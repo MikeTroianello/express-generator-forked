@@ -34,7 +34,7 @@
   "main": "bin/express-cli.js",
   "preferGlobal": true,
   "bin": {
-    "express": "./bin/express-cli.js"
+    "be-generate": "./bin/modified-cli.js"
   },
   "devDependencies": {
     "eslint": "7.32.0",
