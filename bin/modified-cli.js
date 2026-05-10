@@ -336,12 +336,13 @@ function main (options, done) {
     error('option `-v, --view <engine>\' argument missing')
     done(1)
   } else {
-    // Path
-
-    var destinationPath = options._[0] || 'backend'
+    var parentDir = path.resolve(__dirname, '..', '..')
+    var destinationPath = options._[0]
+      ? (path.isAbsolute(options._[0]) ? options._[0] : path.resolve(parentDir, options._[0]))
+      : path.resolve(parentDir, 'backend')
 
     // App name
-    var appName = createAppName(path.resolve(destinationPath)) || 'hello-world'
+    var appName = createAppName(destinationPath) || 'hello-world'
 
     // Generate application
     emptyDirectory(destinationPath, function (empty) {
@@ -383,6 +384,8 @@ function mkdir (base, dir) {
 function usage () {
   console.log('')
   console.log('  Usage: express [options] [dir]')
+  console.log('')
+  console.log('  dir defaults to ../backend (relative to parent of this repo). Absolute paths OK.')
   console.log('')
   console.log('  Options:')
   console.log('')
